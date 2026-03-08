@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Syntax check
+        run: |
+          python - <<'PY'
+          import ast
+          import pathlib
+
+          files = [
+              'config.py',
+              'notion_service.py',
+              'llm_analysis.py',
+              'update_notion.py',
+              'daily_report.py',
+              'report_delivery.py',
+              'review_agent.py',
+          ]
+
+          for f in files:
+              ast.parse(pathlib.Path(f).read_text(), filename=f)
+          print('syntax_ok')
+          PY
