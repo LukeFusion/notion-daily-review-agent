@@ -176,9 +176,19 @@ def _build_followups(items: List[Dict[str, Any]]) -> List[str]:
 
 def _build_worth_revisiting(items: List[Dict[str, Any]]) -> List[str]:
     allowed = {"recipe", "article", "idea"}
+    blocked_phrases = {
+        "gmail forwarding confirmation",
+        "security alert",
+        "no-reply",
+    }
 
     def is_candidate(item: Dict[str, Any]) -> bool:
         type_or_tag = str(item.get("type") or item.get("tag") or "").lower()
+        title = str(item.get("title") or "").strip().lower()
+        if not title or len(title) < 5:
+            return False
+        if any(p in title for p in blocked_phrases):
+            return False
         return type_or_tag in allowed and str(item.get("status") or "") != "Unread"
 
     candidates = [i for i in items if is_candidate(i)]
@@ -194,7 +204,16 @@ def _build_worth_revisiting(items: List[Dict[str, Any]]) -> List[str]:
     older.sort(key=lambda i: i.get("captured_dt") or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
 
     chosen = (recent + older)[:3]
-    return [_truncate(item.get("title") or "Untitled backlog item") for item in chosen]
+    unique: List[str] = []
+    seen = set()
+    for item in chosen:
+        title = _truncate(item.get("title") or "Untitled backlog item")
+        key = title.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(title)
+    return unique[:3]
 
 
 def _build_plan(top_actions: List[str], followups: List[str], revisiting: List[str]) -> Dict[str, List[str]]:
