@@ -1,3 +1,5 @@
+See DAILY_BRIEFING_ARCHITECTURE.md for the multi-source briefing architecture.
+
 # Notion Daily Review Agent
 
 Automated Python agent that reviews your Notion capture database each morning, analyzes unread rows with OpenAI, updates Notion fields, and sends a hybrid operational email briefing.

@@ -14,9 +14,12 @@ def _parse_captured_date(value: Optional[str]) -> Optional[datetime]:
     if not value:
         return None
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError:
         return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 def calculate_days_open(captured_date: Optional[str]) -> Optional[int]:
@@ -26,7 +29,7 @@ def calculate_days_open(captured_date: Optional[str]) -> Optional[int]:
     if not parsed:
         return None
     now = datetime.now(timezone.utc)
-    return max((now - parsed.astimezone(timezone.utc)).days, 0)
+    return max((now - parsed).days, 0)
 
 
 def _load_metrics_history() -> List[Dict[str, Any]]:
