@@ -1,20 +1,22 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List
+# Allow direct script execution: python3 daily_briefing/run_daily_briefing.py
+if __package__ is None or __package__ == "":
+    import sys
+    from pathlib import Path
 
+    sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from daily_briefing.compose_briefing import build_briefing_data
 from daily_briefing.daily_report import generate_daily_briefing, save_daily_report
 from daily_briefing.report_delivery import send_report_email
-from notion_engine.run_notion_updates import run_notion_updates
 
 
 def run() -> None:
-    result = run_notion_updates()
-
-    all_items: List[Dict[str, Any]] = result["all_items"]
-    unread_items: List[Dict[str, Any]] = result["unread_items"]
-    analyses: List[Dict[str, Any]] = result["analyses"]
-    updates: List[Dict[str, Any]] = result["updates"]
-    write_results: List[Dict[str, Any]] = result["write_results"]
+    data = build_briefing_data()
+    all_items = data["all_items"]
+    unread_items = data["unread_items"]
+    analyses = data["analyses"]
 
     print(f"Found {len(all_items)} total item(s).")
     print(f"Found {len(unread_items)} unread item(s).")
@@ -35,7 +37,7 @@ def run() -> None:
             )
 
         print("\nAnalysis summary:")
-        action_counts: Dict[str, int] = {"today": 0, "defer": 0, "archive": 0}
+        action_counts = {"today": 0, "defer": 0, "archive": 0}
         for analysis in analyses:
             action = analysis.get("action")
             if action in action_counts:
@@ -47,16 +49,6 @@ def run() -> None:
             f"archive: {action_counts['archive']}"
         )
 
-        print(f"\nPrepared {len(updates)} pending Notion update(s).")
-
-        succeeded = sum(1 for row in write_results if row.get("ok"))
-        failed = [row for row in write_results if not row.get("ok")]
-        print(f"\nApplied updates in Notion: {succeeded}/{len(write_results)} succeeded.")
-        if failed:
-            print("\nFailed updates:")
-            for row in failed:
-                print(f"- page_id: {row.get('page_id')} error: {row.get('error')}")
-
     subject, narrative = generate_daily_briefing(all_items, unread_items, analyses)
     report_path = save_daily_report(narrative)
 
@@ -64,7 +56,10 @@ def run() -> None:
     print(narrative)
     print(f"\nSaved report: {report_path}")
 
-    sent = send_report_email(subject=subject, body=narrative)
+    sent = send_report_email(
+        subject=subject,
+        body=narrative,
+    )
     if sent:
         print("Report email sent.")
     else:

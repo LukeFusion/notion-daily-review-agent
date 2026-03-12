@@ -27,15 +27,11 @@ jobs:
           import ast
           import pathlib
 
-          files = [
-              'config.py',
-              'notion_service.py',
-              'llm_analysis.py',
-              'update_notion.py',
-              'daily_report.py',
-              'report_delivery.py',
-              'review_agent.py',
-          ]
+          files = sorted(
+              str(path)
+              for pattern in ('*.py', 'daily_briefing/**/*.py', 'notion_engine/**/*.py')
+              for path in pathlib.Path('.').glob(pattern)
+          )
 
           for f in files:
               ast.parse(pathlib.Path(f).read_text(), filename=f)

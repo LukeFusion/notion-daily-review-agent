@@ -47,12 +47,15 @@ Write-back properties (alias matching supported):
 - `AI Action` (select)
 
 ## Project Structure
-- `review_agent.py` - orchestrates full run
-- `notion_service.py` - Notion reads + schema-aware property lookup
-- `llm_analysis.py` - OpenAI classification for unread rows
-- `update_notion.py` - Notion write-back
-- `daily_report.py` - hybrid briefing generation + metrics history
-- `report_delivery.py` - SMTP sender
+- `review_agent.py` - compatibility entrypoint for the full review pipeline
+- `notion_engine/notion_service.py` - Notion reads + schema-aware property lookup
+- `notion_engine/llm_analysis.py` - OpenAI classification for unread rows
+- `notion_engine/update_notion.py` - Notion write-back
+- `notion_engine/run_notion_updates.py` - analysis + Notion update workflow
+- `daily_briefing/daily_report.py` - hybrid briefing generation + metrics history
+- `daily_briefing/report_delivery.py` - SMTP sender
+- `daily_briefing/compose_briefing.py` - briefing data assembly
+- `daily_briefing/run_daily_briefing.py` - report-only entrypoint
 - `config.py` - environment loading/validation
 
 ## Local Setup
@@ -80,6 +83,12 @@ Optional email values:
 ## Run Manually
 ```bash
 python3 review_agent.py
+```
+
+Alternative entrypoints:
+```bash
+python3 notion_engine/run_notion_updates.py
+python3 daily_briefing/run_daily_briefing.py
 ```
 
 ## Schedule at 6:30am Pacific (macOS launchd)
