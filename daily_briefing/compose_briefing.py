@@ -22,4 +22,5 @@ def build_briefing_data() -> Dict[str, List[Dict[str, Any]]]:
         "all_items": all_items,
         "unread_items": unread_items,
         "analyses": analyses,
+        "calendar_events": combined_data.get("calendar_events", []),
     }

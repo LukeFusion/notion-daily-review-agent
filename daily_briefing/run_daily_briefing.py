@@ -17,9 +17,11 @@ def run() -> None:
     all_items = data["all_items"]
     unread_items = data["unread_items"]
     analyses = data["analyses"]
+    calendar_events = data["calendar_events"]
 
     print(f"Found {len(all_items)} total item(s).")
     print(f"Found {len(unread_items)} unread item(s).")
+    print(f"Found {len(calendar_events)} calendar event(s) for today.")
 
     if not unread_items:
         print("No unread items to review today.")
@@ -49,7 +51,12 @@ def run() -> None:
             f"archive: {action_counts['archive']}"
         )
 
-    subject, narrative = generate_daily_briefing(all_items, unread_items, analyses)
+    subject, narrative = generate_daily_briefing(
+        all_items,
+        unread_items,
+        analyses,
+        calendar_events,
+    )
     report_path = save_daily_report(narrative)
 
     print("\nDaily narrative:")

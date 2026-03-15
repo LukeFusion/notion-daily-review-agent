@@ -81,6 +81,18 @@ Optional email values:
 - `SMTP_USERNAME`
 - `SMTP_PASSWORD`
 - `SMTP_USE_TLS`
+- `GOOGLE_SERVICE_ACCOUNT_FILE`
+
+## Google Calendar Source
+To include today's Google Calendar events in the briefing:
+
+1. Create a Google Cloud project and enable the Google Calendar API.
+2. Create a service account and download its JSON key.
+3. Store that JSON key outside the repo at a stable absolute path.
+4. Set `GOOGLE_SERVICE_ACCOUNT_FILE=/absolute/path/to/service-account.json` in `.env`.
+5. Share the calendar you want the briefing to read with the service account email and grant at least `See all event details` access.
+
+When configured, the daily briefing adds a `## Today's Schedule` section with today's events.
 
 ## Run Manually
 ```bash

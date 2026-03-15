@@ -28,3 +28,8 @@ pending_notion_updates.md
 
 # macOS
 .DS_Store
+
+# secret keys
+keys/
+*.key
+*.pem

@@ -276,10 +276,24 @@ def _cap_words(body: str, max_words: int = 400) -> str:
     return " ".join(words[:max_words]).rstrip() + "\n"
 
 
+def _format_calendar_event_time(event: Dict[str, Any]) -> str:
+    start_value = event.get("start")
+    if not start_value:
+        return "Time TBD"
+    if len(start_value) == 10:
+        return "All day"
+    try:
+        parsed = datetime.fromisoformat(start_value.replace("Z", "+00:00"))
+    except ValueError:
+        return str(start_value)
+    return parsed.astimezone().strftime("%I:%M %p").lstrip("0")
+
+
 def generate_daily_briefing(
     all_items: List[Dict[str, Any]],
     unread_items: List[Dict[str, Any]],
     analyses: List[Dict[str, Any]],
+    calendar_events: List[Dict[str, Any]],
 ) -> Tuple[str, str]:
     enriched_all = _enrich_items_with_days_open(all_items)
     enriched_unread = _enrich_items_with_days_open(_merge_unread_analyses(unread_items, analyses))
@@ -310,8 +324,23 @@ def generate_daily_briefing(
         f"2. {top_actions[1]}",
         f"3. {top_actions[2]}",
         "",
-        "## Follow-ups",
     ]
+
+    if calendar_events:
+        lines.extend(["## Today's Schedule"])
+        lines.extend(
+            [
+                f"• {event.get('title') or 'Untitled event'} — {_format_calendar_event_time(event)}"
+                for event in calendar_events
+            ]
+        )
+        lines.append("")
+
+    lines.extend(
+        [
+        "## Follow-ups",
+        ]
+    )
 
     if followups:
         lines.extend([f"• {entry}" for entry in followups[:3]])
@@ -384,8 +413,9 @@ def generate_daily_narrative(
     all_items: List[Dict[str, Any]],
     unread_items: List[Dict[str, Any]],
     analyses: List[Dict[str, Any]],
+    calendar_events: List[Dict[str, Any]],
 ) -> str:
-    _, body = generate_daily_briefing(all_items, unread_items, analyses)
+    _, body = generate_daily_briefing(all_items, unread_items, analyses, calendar_events)
     return body
 
 
