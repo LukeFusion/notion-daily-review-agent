@@ -57,7 +57,11 @@ def run() -> None:
             for row in failed:
                 print(f"- page_id: {row.get('page_id')} error: {row.get('error')}")
 
-    subject, narrative = generate_daily_briefing(all_items, unread_items, analyses)
+    subject, narrative = generate_daily_briefing(
+        all_items,
+        unread_items,
+        analyses,
+    )
     report_path = save_daily_report(narrative)
 
     print("\nDaily narrative:")

@@ -46,6 +46,22 @@ def _save_metrics_history(history: List[Dict[str, Any]]) -> None:
     METRICS_PATH.write_text(json.dumps(history[-30:], indent=2, ensure_ascii=True))
 
 
+def _upsert_metrics_entry(
+    history: List[Dict[str, Any]],
+    today: date,
+    reviewed_count: int,
+    archived_count: int,
+) -> List[Dict[str, Any]]:
+    entry = {
+        "date": today.isoformat(),
+        "reviewed_count": reviewed_count,
+        "archived_count": archived_count,
+    }
+    filtered = [item for item in history if item.get("date") != entry["date"]]
+    filtered.append(entry)
+    return filtered
+
+
 def _normalize_action(value: Optional[str]) -> Optional[str]:
     if not value:
         return None
@@ -293,8 +309,9 @@ def generate_daily_briefing(
     all_items: List[Dict[str, Any]],
     unread_items: List[Dict[str, Any]],
     analyses: List[Dict[str, Any]],
-    calendar_events: List[Dict[str, Any]],
+    calendar_events: Optional[List[Dict[str, Any]]] = None,
 ) -> Tuple[str, str]:
+    calendar_events = calendar_events or []
     enriched_all = _enrich_items_with_days_open(all_items)
     enriched_unread = _enrich_items_with_days_open(_merge_unread_analyses(unread_items, analyses))
 
@@ -391,12 +408,11 @@ def generate_daily_briefing(
 
     reviewed_today = len(enriched_unread)
     archived_today = sum(1 for i in enriched_unread if _normalize_action(i.get("action")) == "archive")
-    history.append(
-        {
-            "date": today.isoformat(),
-            "reviewed_count": reviewed_today,
-            "archived_count": archived_today,
-        }
+    history = _upsert_metrics_entry(
+        history,
+        today=today,
+        reviewed_count=reviewed_today,
+        archived_count=archived_today,
     )
     _save_metrics_history(history)
 
@@ -413,7 +429,7 @@ def generate_daily_narrative(
     all_items: List[Dict[str, Any]],
     unread_items: List[Dict[str, Any]],
     analyses: List[Dict[str, Any]],
-    calendar_events: List[Dict[str, Any]],
+    calendar_events: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     _, body = generate_daily_briefing(all_items, unread_items, analyses, calendar_events)
     return body
