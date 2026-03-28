@@ -1,4 +1,4 @@
-See DAILY_BRIEFING_ARCHITECTURE.md for the multi-source briefing architecture.
+See `SYSTEM_OVERVIEW.md` for the subsystem split and `DAILY_BRIEFING_ARCHITECTURE.md` for the multi-source briefing architecture.
 
 # Notion Daily Review Agent
 
