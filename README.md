@@ -4,6 +4,10 @@ See `SYSTEM_OVERVIEW.md` for the subsystem split and `DAILY_BRIEFING_ARCHITECTUR
 
 Automated Python agent that reviews your Notion capture database each morning, analyzes unread rows with OpenAI, updates Notion fields, and sends a hybrid operational email briefing.
 
+## Why This Exists
+
+This project is a personal daily briefing system that turns scattered inputs—tasks, reminders, calendar events, and (eventually) other signals like weather or news—into a single, structured morning report. Instead of checking multiple tools and mentally prioritizing your day, the system aggregates and analyzes everything for you, then delivers a concise narrative via email. The goal is to reduce cognitive overhead, surface what matters most, and create a repeatable “start of day” workflow that scales as new data sources are added.
+
 ## What It Does
 1. Reads all Notion rows for context.
 2. Identifies unread rows (`Status = Unread`) for actioning.
@@ -19,6 +23,45 @@ Automated Python agent that reviews your Notion capture database each morning, a
    - worth revisiting + suggested plan
 6. Saves markdown report in `reports/`.
 7. Sends report by SMTP email if configured.
+
+## Sample Output
+
+**Subject:** Daily Briefing — March 13, 2026
+
+### Daily Review Narrative
+
+Today is Friday, March 13, 2026. Your schedule is front-loaded with two structured commitments, giving you a defined window to focus on key follow-ups before the afternoon. Your backlog remains manageable, with a small number of high-value actions that can be closed quickly to maintain momentum.
+
+### Today's Schedule
+
+- Certify for EDD Benefits — 10:45 AM  
+- Monthly Goals Retro — 11:15 AM  
+
+### Top Priorities
+
+1. Send job outreach message to Tom Neyhart  
+2. Follow up with Carolina on next steps  
+3. Confirm documents for healthcare / domestic partnership  
+
+### What's Still There
+
+- Calendar digest setup (pending from earlier this week)  
+- Basketball refereeing opportunities (exploration item)  
+
+### Can Hold Off
+
+- Recipe ideas and saved articles  
+- General reading backlog  
+
+### Suggested Plan
+
+- Use early morning (before 10:45 AM) to complete outreach and admin tasks  
+- Attend scheduled meetings with clear outcomes in mind  
+- Block 30–60 minutes later today or this weekend for backlog review  
+
+---
+
+*This example is sanitized and does not contain real personal data.*
 
 ## Morning Briefing Format
 - `## Daily Review Narrative`
