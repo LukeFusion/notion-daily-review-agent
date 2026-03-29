@@ -34,19 +34,19 @@ Today is Friday, March 13, 2026. Your schedule is front-loaded with two structur
 
 ### Today's Schedule
 
-- Certify for EDD Benefits — 10:45 AM  
+- Certify for AI Course — 10:45 AM  
 - Monthly Goals Retro — 11:15 AM  
 
 ### Top Priorities
 
-1. Send job outreach message to Tom Neyhart  
-2. Follow up with Carolina on next steps  
-3. Confirm documents for healthcare / domestic partnership  
+1. Send job outreach message to Tom Smith  
+2. Follow up with Carol on next steps  
+3. Confirm documents for CS filings
 
 ### What's Still There
 
 - Calendar digest setup (pending from earlier this week)  
-- Basketball refereeing opportunities (exploration item)  
+- Volunteer opportunities with local school (exploration item)  
 
 ### Can Hold Off
 
