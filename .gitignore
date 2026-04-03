@@ -31,5 +31,6 @@ pending_notion_updates.md
 
 # secret keys
 keys/
+Keys/
 *.key
 *.pem
